@@ -15,6 +15,7 @@ output_file = "mensagem.enc"
 salt = os.urandom(16)
 kdf = Scrypt(salt=salt, length=32, n=2**14, r=8, p=1, backend=default_backend())
 key = kdf.derive(password.encode())
+print("a chave é: ",key)
 
 # Criptografa
 aesgcm = AESGCM(key)
