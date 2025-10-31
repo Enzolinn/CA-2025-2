@@ -7,7 +7,7 @@ httpd = http.server.HTTPServer(server_address, http.server.SimpleHTTPRequestHand
 
 # Cria o contexto SSL corretamente
 context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-context.load_cert_chain(certfile="186665.crt", keyfile="private.key")
+context.load_cert_chain(certfile="server.crt", keyfile="ACRaiz.key")
 
 # Envolve o socket com SSL
 httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
