@@ -1,0 +1,175 @@
+{
+  "info": {
+    "name": "API Músicas - Access, Refresh e Rate Limit",
+    "_postman_id": "aaaa1111-bbbb-2222-cccc-333333333333",
+    "description": "Coleção didática para demonstrar login, access token, refresh token, acesso protegido ao endpoint /songs e rate limiting.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "01 - Health (GET /health - público)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        }
+      }
+    },
+    {
+      "name": "02 - Login (POST /auth/login)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"username\": \"alice\",\n  \"password\": \"alice123\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  var data = pm.response.json();",
+              "  if (data.access_token) {",
+              "    pm.environment.set('access_token', data.access_token);",
+              "  }",
+              "  if (data.refresh_token) {",
+              "    pm.environment.set('refresh_token', data.refresh_token);",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "03 - Listar músicas sem token (GET /songs - deve 401)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/songs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "songs"
+          ]
+        }
+      }
+    },
+    {
+      "name": "04 - Listar músicas com access token (GET /songs)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/songs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "songs"
+          ]
+        }
+      }
+    },
+    {
+      "name": "05 - Refresh token (POST /auth/refresh)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"refresh_token\": \"{{refresh_token}}\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/auth/refresh",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "auth",
+            "refresh"
+          ]
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.response.code === 200) {",
+              "  var data = pm.response.json();",
+              "  if (data.access_token) {",
+              "    pm.environment.set('access_token', data.access_token);",
+              "  }",
+              "}"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "06 - Listar músicas com novo access token (GET /songs)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/songs",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "songs"
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [],
+  "protocolProfileBehavior": {}
+}
